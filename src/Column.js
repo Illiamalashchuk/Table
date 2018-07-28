@@ -14,16 +14,18 @@ class Column extends Component {
     }
   }
 
+
   render() {
+    const className = this.props.isEnterForPercent ? ("table-light") : ((this.props.allValues[this.props.columnObject].highlighted) ? ("table-primary") : ("table-light"));
     return (  
       <td 
-        className={(this.props.columnObject.highlighted) ? ("table-primary") : ("table-light")}
-        id={this.props.columnObject.id} 
+        className={className}
+        data-id={this.props.columnObject} 
         onClick={this.props.changeValues}
         onMouseOver={this.props.lingthUpSomeValues}
         onMouseOut={this.props.clearLightedValues}
         >
-          {this.props.columnObject.number}
+          {this.props.isEnterForPercent ? (this.props.columnObject.number) : (this.props.allValues[this.props.columnObject].number)}
         <div
           id={this.props.columnObject.id} 
           style={this.props.isEnterForPercent ? (this.state.style) : ({display: 'none'}) }

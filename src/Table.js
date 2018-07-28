@@ -1,6 +1,8 @@
 import React, { Component }  from 'react';
 import { connect } from 'react-redux';
 import Row from './Row'; // row component
+import { getMeanValues } from './selectors/index'
+import { getSummAndPercentRows } from './selectors/index'
 
 
 class Table extends Component {
@@ -13,15 +15,15 @@ class Table extends Component {
     this.props.table.forEach(row => {
       rowsId.push(row.id) // push ids inside an array
     })
-    let indexOfRow = rowsId.indexOf(+event.target.id)  // find the index of row
+    let indexOfRow = rowsId.indexOf(+event.target.dataset.id)  // find the index of row
+    this.props.deleteValues(this.props.table[indexOfRow].columns)  // call our reducer to delete the row
     this.props.deleteRowFromTable(indexOfRow)  // call our reducer to delete the row
   }
- 
+
 
   render() { 
     return (
       <div>
-
         <table className="table">
           <thead>
             <tr>
@@ -37,19 +39,21 @@ class Table extends Component {
             {this.props.table.map((row, index) => {
               return (
                 <Row 
-                  key={row.id}
-                  getMeanValues={this.props.getMeanValues} // push function inside component
+                  key={row.id}     
                   rowIndex={index} // push index of row inside every row
+                  rowId={row.id}
+                  rowSumm={this.props.rows.rowsSumm[index]}
+                  rowPercent={this.props.rows.percentTable[index]}
                   deleteRow={this.deleteRow.bind(this)}
                 />
               )
             })}
             <tr className="table-dark">
               <th>Mean</th>
-              {this.props.meanValues.map((value, i) => {  
+              {this.props.meanValues.map((mean) => {  
                 return (
-                  <th key={i}>
-                    {value}
+                  <th key={mean.id}>
+                    {mean.number}
                   </th>  // row of mean values
                 )
               })}
@@ -59,25 +63,31 @@ class Table extends Component {
        
       </div>
     );
-    
   }
+}
+
+const deleteRowFromTable = (rowIndex) => {
+  const payload = rowIndex;
+  return ({ type: 'DELETE_ROW_FROM_TABLE', payload })
+}
+const deleteValues = (values) => {
+  const payload = values;
+  return ({ type: 'DELETE_VALUES', payload })
+}
+
+const mapDispatchToProps = {
+  deleteRowFromTable,
+  deleteValues
 }
 
 const mapStateToProps = (state) => {
   return {
     defaultIntegers: state.defaultIntegers,
     table: state.table,
-    meanValues: state.meanValues
+    meanValues: getMeanValues(state),
+    rows: getSummAndPercentRows(state),
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-     deleteRowFromTable: (rowIndex) => {
-      const payload = rowIndex;
-      dispatch({ type: 'DELETE_ROW_FROM_TABLE', payload })
-    }
-  }
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Table);
