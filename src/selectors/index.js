@@ -41,7 +41,7 @@ export const getSummAndPercentRows = createSelector(
       }, 0);
       rowsSumm.push(total)
       row.columns.forEach((columnId, i) => {
-        percensRow.push({id: i, number: `${Math.round(allValues[columnId].number/total*100)}%`}) 
+        percensRow.push({id: i, number: Math.round(allValues[columnId].number/total*100)}) 
       })    
       percentTable.push(percensRow);
     })
