@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import { connect } from 'react-redux';
 import Column from './Column';
-
+import { cookie } from 'redux-effects-universal-cookie';
 
 class Row extends Component{
   constructor(props) {
@@ -51,7 +51,8 @@ class Row extends Component{
     } else {
       ids.push(rowUp.columns[index-1], rowUp.columns[index+1], rowDown.columns[index-1], rowDown.columns[index+1], clickedCell)
     }
-    this.props.updateCell(ids)
+    this.props.updateCell(ids);
+    this.props.setCookies(clickedCell, this.props.allValues[clickedCell].number) // setting the cookie
   }
   
   // function called by mouse on some number cell
@@ -180,11 +181,17 @@ const higlightAllValues = (idArr) => {
 const unhiglightAllValues = () => {
   return ({ type: 'UN_HIGHLIGHT_VALUES'})
 }
+const setCookies = (id, value) => {
+  let date = new Date(new Date().getTime() + 60 * 1000); // cookie will live only 60 seconds
+  return cookie(id, value, {expires: date})
+}
+
 
 const mapDispatchToProps = {
   updateCell,
   higlightAllValues,
-  unhiglightAllValues
+  unhiglightAllValues,
+  setCookies
 }
 
 const mapStateToProps = (state) => {

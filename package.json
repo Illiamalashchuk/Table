@@ -1,20 +1,16 @@
 {
   "name": "table",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.1.1",
     "react": "^16.4.1",
-    "react-bootstrap-modal": "^4.1.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
-    "react-redux-modal": "^0.5.2",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
-    "redux-cookie": "^0.5.9",
     "redux-devtools-extension": "^2.13.5",
-    "redux-form": "^7.4.2",
-    "redux-modal": "^2.0.3",
+    "redux-effects-universal-cookie": "^1.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1"
   },
