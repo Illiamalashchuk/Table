@@ -2,6 +2,7 @@ import React, { Component }  from 'react';
 import { connect } from 'react-redux';
 import Column from './Column';
 import { cookie } from 'redux-effects-universal-cookie';
+// import changeNumbers from './middleware/change'
 
 class Row extends Component{
   constructor(props) {
@@ -23,36 +24,10 @@ class Row extends Component{
   // number will rise +1 by every click
   // summ of the row will also change as so mean values in bottom of the table
   changeValues(event) {
-    let ids = [];
     const index = this.props.table[this.props.rowIndex].columns.indexOf(+event.target.dataset.id)
     const clickedCell = this.props.table[this.props.rowIndex].columns[index];
-    const rowUp = this.props.table[this.props.rowIndex-1];
-    const rowDown = this.props.table[this.props.rowIndex+1];
-    if(rowUp  === undefined) {
-      if(rowDown.columns[index-1] === undefined) {
-        ids.push(rowDown.columns[index+1], clickedCell)
-      } else if(rowDown.columns[index+1] === undefined) {
-        ids.push(rowDown.columns[index-1], clickedCell)
-      } else {
-        ids.push(rowDown.columns[index+1], rowDown.columns[index-1], clickedCell)
-      }
-    } else if(rowDown === undefined) {
-      if(rowUp.columns[index-1] === undefined) {
-        ids.push(rowUp.columns[index+1], clickedCell)
-      } else if(rowUp.columns[index+1] === undefined) {
-        ids.push(rowUp.columns[index-1], clickedCell)
-      } else {
-        ids.push(rowUp.columns[index+1], rowUp.columns[index-1], clickedCell)
-      }
-    } else if(index-1 === -1) {
-      ids.push(rowUp.columns[index+1], rowDown.columns[index+1], clickedCell)
-    } else if(index+1 === this.props.table[0].columns.length) {
-      ids.push(rowUp.columns[index-1], rowDown.columns[index-1], clickedCell)
-    } else {
-      ids.push(rowUp.columns[index-1], rowUp.columns[index+1], rowDown.columns[index-1], rowDown.columns[index+1], clickedCell)
-    }
-    this.props.updateCell(ids);
     this.props.setCookies(clickedCell, this.props.allValues[clickedCell].number) // setting the cookie
+    this.props.changeNumbers(this.props.rowIndex, index, clickedCell)
   }
   
   // function called by mouse on some number cell
@@ -170,10 +145,6 @@ class Row extends Component{
 }
 
 
-const updateCell = (id) => {
-  const payload = id;
-  return ({ type: 'UPDATE_CELL', payload })
-}
 const higlightAllValues = (idArr) => {
   const payload = idArr;
   return ({ type: 'HIGHLIGHT_VALUES', payload })
@@ -185,13 +156,17 @@ const setCookies = (id, value) => {
   let date = new Date(new Date().getTime() + 60 * 1000); // cookie will live only 60 seconds
   return cookie(id, value, {expires: date})
 }
+const changeNumbers = (rowIndex, index, clickedCell) => {
+  const payload = {rowIndex, index, clickedCell}
+  return ({ type: 'CHANGE_NUMBERS', payload})
+}
 
 
 const mapDispatchToProps = {
-  updateCell,
   higlightAllValues,
   unhiglightAllValues,
-  setCookies
+  setCookies,
+  changeNumbers
 }
 
 const mapStateToProps = (state) => {

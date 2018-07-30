@@ -34,6 +34,7 @@ export default function(state = [], action) {
                 newState[id].number += 1;
             })
             return newState
+           
             
         case 'HIGHLIGHT_VALUES':
             action.payload.forEach(el => {
