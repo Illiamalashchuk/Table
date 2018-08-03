@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import cookieMiddleware from 'redux-effects-universal-cookie';
+// import cookieMiddleware from 'redux-effects-universal-cookie';
 import changeNumbers from './middleware/change';
 import reducers from './reducers'
 import App from './App';
@@ -16,7 +16,7 @@ const store = createStore(
     composeWithDevTools(
         applyMiddleware(
             thunk,
-            cookieMiddleware(), // cookies middleware
+            // cookieMiddleware(), // cookies middleware
             changeNumbers
         )
     )

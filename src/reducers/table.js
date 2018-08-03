@@ -1,36 +1,32 @@
 export default function(state = [], action) {
     switch (action.type) { 
         case 'ADD_TABLE':
-            const identificators = action.payload.identificators;
-            const integers = action.payload.integers;
             let table = [];
-            for(let i = 0; i < integers.m; i++) {
+            for(let i = 0; i < action.payload.integers.m; i++) {
                 table.push({
                     id: i+1,
-                    columns: identificators.splice(0, integers.n)
+                    cells: action.payload.identificators.splice(0, action.payload.integers.n),
                 })
             };
             return table
 
         case 'ADD_NEW_ROW':
-            const newIdentificators = action.payload;
-            const lastRowId = state[state.length-1].id;
             let newRow = {
-                id: lastRowId+1,
-                columns: []
+                id: state[state.length-1].id+1,
+                cells: [],
             }
-            newIdentificators.forEach(id => {
-                newRow.columns.push(id)
+            action.payload.forEach(id => {
+                newRow.cells.push(id)
             })
             return [
                 ...state, newRow
             ]
             
         case 'DELETE_ROW_FROM_TABLE':
-            let newStateFirst = state.slice(0, action.payload)
-            let newStateSecond = state.slice(action.payload+1, state.length)
-            let newState = newStateFirst.concat(newStateSecond)
-            return newState
+            return [
+                ...state.slice(0, action.payload),
+                ...state.slice(action.payload+1, state.length)
+            ]
             
         default:
             return state

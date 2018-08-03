@@ -13,41 +13,20 @@ class App extends Component{
     return identificators
   }
 
-
   componentWillMount() {
     const identificators = this.constructor.createIdArray(this.props.defaultIntegers);
-    this.props.setAllValues(identificators, this.props.defaultIntegers);   // saving to the store @allValuesReducer@
-    this.props.addTable(identificators, this.props.defaultIntegers);   // saving to the store @allValuesReducer@
+    this.props.setAllValues(identificators);   
+    this.props.setHighlight(identificators, this.props.defaultIntegers);   
+    this.props.addTable(identificators, this.props.defaultIntegers);
   }
 
-  // event function on button ===Add new row===
-  addNewRow() {
-    let numbers = [];
-    let lastColumnId = 0;
-    for (let key in this.props.allValues) {
-      lastColumnId = +key;
-    }
-    for(let i = 0; i < this.props.defaultIntegers.n; i++) {
-      numbers.push(lastColumnId+i+1)
-    }
-   
-    this.props.addNewRow(numbers);
-    this.props.addNewValue(this.props.defaultIntegers, numbers);
-  }
 
   render() {
     return (
       <div className="container">
         <Table />
-        <button 
-          className="btn btn-success"
-          onClick={this.addNewRow.bind(this)}
-        >
-          Add new row
-        </button>
       </div>
-    );
-    
+    ); 
   }
 }
 
@@ -58,40 +37,28 @@ const addTable = (identificators, integers) => {
   };
   return ({ type: 'ADD_TABLE', payload })
 }
-const addNewValue = (integers, identificators) => {
-  const payload = {
-    integers: integers,
-    identificators: identificators
-  };
-  return ({ type: 'ADD_NEW_VALUES', payload })
-}
-const addNewRow = (numbers) => {
-  const payload = numbers;
-  return ({ type: 'ADD_NEW_ROW', payload})
-}
-const setAllValues = (identificators, integers) => {
-  const payload = {
-    identificators: identificators,
-    integers: integers
-  }
+const setAllValues = (identificators) => {
+  const payload = identificators;
   return ({ type: 'SET_ALL_VALUES', payload })
+}
+const setHighlight = (identificators, integers) => {
+  const payload = {identificators, integers};
+  return ({ type: 'SET_HIGHLIGHT', payload })
+}
+
+
+const mapDispatchToProps = {
+  addTable,
+  setAllValues,
+  setHighlight
 }
 
 
 const mapStateToProps = (state) => {
   return {
-    defaultIntegers: state.defaultIntegers, 
-    allValues: state.allValues,
-    table: state.table,
+    defaultIntegers: state.defaultIntegers 
   }
 };
 
-
-const mapDispatchToProps = {
-  addNewValue,
-  addTable,
-  addNewRow,
-  setAllValues
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
