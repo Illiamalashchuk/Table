@@ -1,23 +1,24 @@
-import React, { Component }  from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Table from './Table'; // table component;
+import Table from './Table';
 
 
-class App extends Component{
+class App extends Component {
   static createIdArray(integers) {
-    const arrLength = integers.m*integers.n;
-    let identificators = [];
-    for(let i = 0; i < arrLength; i++) {
-      identificators.push(i+1);
+    const arrLength = integers.m * integers.n;
+    const identificators = [];
+    for (let i = 0; i < arrLength; i += 1) {
+      identificators.push(i + 1);
     }
-    return identificators
+    return identificators;
   }
 
-  componentWillMount() {
-    const identificators = this.constructor.createIdArray(this.props.defaultIntegers);
-    this.props.setAllValues(identificators);   
-    this.props.setHighlight(identificators, this.props.defaultIntegers);   
-    this.props.addTable(identificators, this.props.defaultIntegers);
+  UNSAFE_componentWillMount() {
+    const { defaultIntegers, setAllValues, setHighlight, addTable } = this.props;
+    const identificators = this.constructor.createIdArray(defaultIntegers);
+    setAllValues(identificators);
+    setHighlight(identificators, defaultIntegers);
+    addTable(identificators, defaultIntegers);
   }
 
 
@@ -31,33 +32,30 @@ class App extends Component{
 }
 
 const addTable = (identificators, integers) => {
-  const payload = {
-    identificators: identificators,
-    integers: integers
-  };
-  return ({ type: 'ADD_TABLE', payload })
+  const payload = { identificators, integers };
+  return ({ type: 'ADD_TABLE', payload });
 }
 const setAllValues = (identificators) => {
   const payload = identificators;
-  return ({ type: 'SET_ALL_VALUES', payload })
+  return ({ type: 'SET_ALL_VALUES', payload } )
 }
 const setHighlight = (identificators, integers) => {
-  const payload = {identificators, integers};
-  return ({ type: 'SET_HIGHLIGHT', payload })
+  const payload = { identificators, integers };
+  return ({ type: 'SET_HIGHLIGHT', payload });
 }
 
 
 const mapDispatchToProps = {
   addTable,
   setAllValues,
-  setHighlight
-}
+  setHighlight,
+};
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    defaultIntegers: state.defaultIntegers 
-  }
+    defaultIntegers: state.defaultIntegers,
+  };
 };
 
 
