@@ -49,19 +49,39 @@ export default function(state = [], action) {
                 return a.difference - b.difference;
             });
             ids = ids.slice(0, action.payload.x+1);
+            // console.log(ids)
+            // ids.forEach(el => {
+            //     copyState.forEach((row, rowIndex) => {
+            //             console.log(row.cells)
+                    
+            //         let newRow = {...row};
+            //         newRow.cells.forEach((cell, cellIndex) => {
+            //             let newCell = {...cell}
+            //             if(newCell.id === el.id) {
+            //                 newRow.highlight = true;
+            //                 cell.highlight = true;
+            //             }
+            //         })
+            //     copyState[rowIndex] = newRow;
+            //     })
+            // })
+           
             ids.forEach(el => {
-                copyState.forEach((row, rowIndex) => {
-                    let newRow = {...row};
-                    newRow.cells.forEach((cell, cellIndex) => {
+                copyState = copyState.map(row => {
+                    let newRow = {...row}
+                    newRow.cells = row.cells.map(cell => {
                         let newCell = {...cell}
                         if(newCell.id === el.id) {
-                            newRow.highlight = true;
-                            cell.highlight = true;
+                            newCell.highlight = true
+                            newRow.highlight = true
                         }
+                        return newCell
                     })
-                copyState[rowIndex] = newRow;
+                    return newRow
                 })
+                
             })
+       
            
             return copyState
 
