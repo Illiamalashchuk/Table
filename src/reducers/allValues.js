@@ -1,4 +1,16 @@
-export default function (state = {}, action) {
+// @flow
+import type { allValuesType } from '../../types';
+
+type state = allValuesType;
+
+type setAllValuesAction = { type: 'SET_ALL_VALUES', payload: number[] };
+type addNewValuesAction = { type: 'ADD_NEW_VALUES', payload: number[] };
+type deleteValuesAction = { type: 'DELETE_VALUES', payload: number[] };
+type updateValuesAction = { type: 'UPDATE_CELL', payload: number };
+
+type action = setAllValuesAction |addNewValuesAction | deleteValuesAction | updateValuesAction;
+
+export default function (state: state = {}, action: action) {
     const min = 100; // start of random number
     const max = 999; // end of random number
     switch (action.type) {

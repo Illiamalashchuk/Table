@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import defaultIntegers from './defaultIntegers';
 import table from './table';

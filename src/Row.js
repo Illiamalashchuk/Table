@@ -1,17 +1,52 @@
+// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Cell from './Cell';
+import type { defaultIntegersType, allValuesType, tableRowType, highlightRowType, percentsType } from '../types';
 
 
-class Row extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEnterForPercent: false,
-      summ: 0,
-      percents: [],
-    };
-  }
+const setCookies = (id: number) :{| type: 'SET_COOKIES', payload: number |} => {
+  const payload = id;
+  return ({ type: 'SET_COOKIES', payload });
+};
+const changeNumbers = (rowIndex: number, index: number, clickedCell: number) :{| type: 'CHANGE_NUMBERS', payload: Object |} => {
+  const payload = { rowIndex, index, clickedCell };
+  return ({ type: 'CHANGE_NUMBERS', payload });
+};
+const highlightCells = (id: number, x: number, values: allValuesType) :{| type: 'HIGHLIGHT_CELLS', payload: Object |} => {
+  const payload = { id, x, values };
+  return ({ type: 'HIGHLIGHT_CELLS', payload });
+};
+const unhighlightCells = () => ({ type: 'UNHIGHLIGHT_CELLS'});
+
+
+type RowProps = {
+	highlightCells: typeof highlightCells,
+	unhighlightCells: typeof unhighlightCells,
+	changeNumbers: typeof changeNumbers,
+  setCookies: typeof setCookies,
+  deleteRow: Function,
+	defaultIntegers: defaultIntegersType,
+  allValues: allValuesType,
+  row: tableRowType,
+  highlight: highlightRowType,
+  index: number,
+}
+
+type RowState = {
+	isEnterForPercent: boolean,
+	summ: number,
+	percents: percentsType,
+}
+
+
+class Row extends Component<RowProps, RowState> {
+	state = {
+		isEnterForPercent: false,
+		summ: 0,
+		percents: [],
+	};
+	
 
   UNSAFE_componentWillMount() {
     const { allValues, row } = this.props;
@@ -37,7 +72,7 @@ class Row extends Component {
       return true;
     } if (allValues !== nextProps.allValues) {
       return true;
-    } else if (allValues !== nextState.allValues && highlight.highlight !== nextProps.highlight.highlight) {
+    } else if (highlight.highlight !== nextProps.highlight.highlight) {
       return true;
     } else if (index !== nextProps.index) {
       return true;
@@ -47,12 +82,12 @@ class Row extends Component {
   }
 
   countPercents(allValues, row, total) {
-    const percensRow = [];
+    const percentsRow = [];
     row.cells.forEach((cellId, i) => {
-      percensRow.push({ id: i, number: Math.round(allValues[cellId] / total * 100) });
+      percentsRow.push({ id: i, number: `${Math.round(allValues[cellId] / total * 100)}%` });
     });
     this.setState({
-      percents: percensRow,
+      percents: percentsRow,
     });
   }
 
@@ -65,9 +100,9 @@ class Row extends Component {
 
   // number of cells will rise +1 by every click
   // summ of the row will also change as so mean values in bottom of the table
-  changeValues(event) {
+  changeValues(event: SyntheticEvent<HTMLTableCellElement>) {
     const { row, index, changeNumbers, setCookies } = this.props;
-    const indexOfCell = row.cells.indexOf(+event.target.dataset.id);
+    const indexOfCell = row.cells.indexOf(+event.currentTarget.dataset.id);
     const clickedCell = row.cells[indexOfCell];
     changeNumbers(index, indexOfCell, clickedCell);
     setCookies(clickedCell)
@@ -76,21 +111,22 @@ class Row extends Component {
   // function called by mouse on some number cell
   // it will highlight x values
   // number x we get from default integers in global store
-  lingthUpSomeValues(event) {
-    const { defaultIntegers, allValues, higlightCells } = this.props;
-    higlightCells(+event.target.dataset.id, defaultIntegers.x, allValues);
+  lingthUpSomeValues(event: SyntheticEvent<HTMLTableCellElement>) {
+    const { defaultIntegers, allValues, highlightCells } = this.props;
+    highlightCells(+event.currentTarget.dataset.id, defaultIntegers.x, allValues);
   }
 
   // function called on mouse out from cell
   // this func cler all highlighted cells
   clearLightedValues() {
-    const { unhiglightCells } = this.props;
-    unhiglightCells();
+    const { unhighlightCells } = this.props;
+    unhighlightCells();
   }
 
 
   render() {
     const { row, allValues, highlight, index, deleteRow } = this.props;
+    const { percents, isEnterForPercent, summ } = this.state;
     const renderNumbers = row.cells.map((cell, index) => (
       <Cell 
         key={cell}
@@ -100,16 +136,28 @@ class Row extends Component {
         changeValues={this.changeValues.bind(this)}
         lingthUpSomeValues={this.lingthUpSomeValues.bind(this)}
         clearLightedValues={this.clearLightedValues.bind(this)}
+
+        isEnterForPercent={isEnterForPercent}
+
       />
     ));
-    const renderPercents = this.state.percents.map(value => (
+    const renderPercents = percents.map(value => (
       <Cell 
         key={value.id} 
-        value={value}
-        isEnterForPercent={this.state.isEnterForPercent}
+        id={value.id}
+        value={value.number}
+        isEnterForPercent={isEnterForPercent}
+
+        changeValues={this.changeValues.bind(this)}
+        lingthUpSomeValues={this.lingthUpSomeValues.bind(this)}
+        clearLightedValues={this.clearLightedValues.bind(this)}
+        highlight={highlight.cells[index].highlight}
+
+
+
       />
     ));
-    const result = (this.state.isEnterForPercent) ? (renderPercents) : (renderNumbers);
+    const result = (isEnterForPercent) ? (renderPercents) : (renderNumbers);
     return (
       <tr data-id={row.id}>
         <th>
@@ -121,7 +169,7 @@ class Row extends Component {
           onMouseOver={this.hidePercent.bind(this)}
           onMouseOut={this.hidePercent.bind(this)}
         >
-          {this.state.summ}
+          {summ}
         </th>
         <td>
           <button
@@ -137,29 +185,16 @@ class Row extends Component {
   }
 }
 
-const setCookies = (id) => {
-  const payload = id;
-  return ({ type: 'SET_COOKIES', payload });
-};
-const changeNumbers = (rowIndex, index, clickedCell) => {
-  const payload = { rowIndex, index, clickedCell };
-  return ({ type: 'CHANGE_NUMBERS', payload });
-};
-const higlightCells = (id, x, values) => {
-  const payload = { id, x, values };
-  return ({ type: 'HIGHLIGHT_CELLS', payload });
-};
-const unhiglightCells = () => ({ type: 'UNHIGHLIGHT_CELLS'});
 
 
 const mapDispatchToProps = {
-  higlightCells,
-  unhiglightCells,
+  highlightCells,
+  unhighlightCells,
   changeNumbers,
   setCookies,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RowProps) => ({
   defaultIntegers: state.defaultIntegers,
   allValues: state.allValues,
 });

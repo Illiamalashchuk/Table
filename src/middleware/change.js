@@ -1,8 +1,13 @@
-const changeNumbers = store => next => (action) => {
+// @flow
+import type { Middleware } from 'redux';
+import type { StateType } from '../../types';
+type updateCellAction = { type: 'UPDATE_CELL', payload: number };
+type changeActionType = { rowIndex: number, index: number, clickedCell: number };
+
+const changeNumbers: Middleware<StateType, updateCellAction> = store => next => action => {
   if (action.type === 'CHANGE_NUMBERS') {
     const { table } = store.getState();
-    const { rowIndex, index, clickedCell } = action.payload;
-    // const clickedCell = action.payload.clickedCell;
+    const { rowIndex, index, clickedCell }: changeActionType = action.payload;
     const rowUp = table[rowIndex - 1];
     const rowDown = table[rowIndex + 1];
     store.dispatch({ type: 'UPDATE_CELL', payload: clickedCell });

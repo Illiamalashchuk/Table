@@ -1,7 +1,9 @@
+// @flow
 import { createSelector } from 'reselect'
+import type { StateType } from '../../types';
 
-const getAllValues = (state) => state.allValues;
-const getTable = (state) => state.table;
+const getAllValues = (state: StateType) => state.allValues;
+const getTable = (state: StateType) => state.table;
 
 
 export const getMeanValues = createSelector(
@@ -23,7 +25,7 @@ export const getMeanValues = createSelector(
       }, 0);
       total = total/emptyArrayForSortedValues[i].length;
       total = total.toFixed(2);    // rounding mean values to  000.00 number 
-      meanValues.push({id: i+1, number: total});
+      meanValues.push({id: i+1, number: +total});
     }
     return meanValues
   }

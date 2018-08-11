@@ -1,9 +1,32 @@
+// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Table from './Table';
+import type { defaultIntegersType } from '../types';
+
+const addTable = (identificators: number[], integers: defaultIntegersType) :{| type: 'ADD_TABLE', payload: Object  |} => {
+  const payload = { identificators, integers };
+  return ({ type: 'ADD_TABLE', payload });
+}
+const setAllValues = (identificators: number[]) :{| type: 'SET_ALL_VALUES', payload: number[] |} => {
+  const payload = identificators;
+  return ({ type: 'SET_ALL_VALUES', payload });
+}
+const setHighlight = (identificators: number[], integers: defaultIntegersType) :{| type: 'SET_HIGHLIGHT', payload: Object |} => {
+  const payload = { identificators, integers };
+  return ({ type: 'SET_HIGHLIGHT', payload });
+}
 
 
-class App extends Component {
+type AppProps = {
+  defaultIntegers: defaultIntegersType,
+  setAllValues: typeof setAllValues,
+  setHighlight: typeof setHighlight,
+  addTable: typeof addTable
+};
+
+
+class App extends Component<AppProps> {
   static createIdArray(integers) {
     const arrLength = integers.m * integers.n;
     const identificators = [];
@@ -29,20 +52,7 @@ class App extends Component {
       </div>
     ); 
   }
-}
-
-const addTable = (identificators, integers) => {
-  const payload = { identificators, integers };
-  return ({ type: 'ADD_TABLE', payload });
-}
-const setAllValues = (identificators) => {
-  const payload = identificators;
-  return ({ type: 'SET_ALL_VALUES', payload } )
-}
-const setHighlight = (identificators, integers) => {
-  const payload = { identificators, integers };
-  return ({ type: 'SET_HIGHLIGHT', payload });
-}
+};
 
 
 const mapDispatchToProps = {
@@ -52,7 +62,7 @@ const mapDispatchToProps = {
 };
 
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppProps)  => {
   return {
     defaultIntegers: state.defaultIntegers,
   };

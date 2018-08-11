@@ -1,13 +1,56 @@
+// @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Row from './Row'; // row component
+import Row from './Row';
 import { getMeanValues } from './selectors/index';
+import type { defaultIntegersType, tableType, allValuesType, highlightType, meanValuesType } from '../types';
 
 
-class Table extends Component {
+const addNewRow = (newIdentificators: number[]) :{| type: 'ADD_NEW_ROW', payload: number[] |} => {
+  const payload = newIdentificators;
+  return ({ type: 'ADD_NEW_ROW', payload });
+};
+const addNewValue = (newIdentificators: number[]) :{| type: 'ADD_NEW_VALUES', payload: number[] |} => {
+  const payload = newIdentificators;
+  return ({ type: 'ADD_NEW_VALUES', payload });
+};
+const addNewHighlight = (newIdentificators: number[]) :{| type: 'SET_NEW_HIGHLIGHT', payload: number[] |} => {
+  const payload = newIdentificators;
+  return ({ type: 'SET_NEW_HIGHLIGHT', payload });
+};
+const deleteRowFromTable = (rowIndex: number) :{| type: 'DELETE_ROW_FROM_TABLE', payload: number |} => {
+  const payload = rowIndex;
+  return ({ type: 'DELETE_ROW_FROM_TABLE', payload });
+};
+const deleteValues = (values: Array<number>) :{| type: 'DELETE_VALUES', payload: Array<number> |} => {
+  const payload = values;
+  return ({ type: 'DELETE_VALUES', payload });
+};
+const deleteHighlight = (rowIndex: number) :{| type: 'DELETE_HIGHLIGHT', payload: number |} => {
+  const payload = rowIndex;
+  return ({ type: 'DELETE_HIGHLIGHT', payload });
+};
+
+
+type TableProps = {
+  addNewRow: typeof addNewRow,
+  addNewValue: typeof addNewValue,
+  addNewHighlight: typeof addNewHighlight,
+  deleteRowFromTable: typeof deleteRowFromTable,
+  deleteValues: typeof deleteValues,
+  deleteHighlight: typeof deleteHighlight,
+  defaultIntegers: defaultIntegersType,
+  table: tableType,
+  allValues: allValuesType,
+  highlight: highlightType,
+  meanValues: meanValuesType
+};
+
+
+class Table extends Component<TableProps> {
   addNewRow() {
     const { allValues, defaultIntegers, addNewRow, addNewValue, addNewHighlight } = this.props;
-    const newIdentificators = [];
+    const newIdentificators: number[] = [];
     let lastCellId = 0;
     for (const key in allValues) {
       lastCellId = +key;
@@ -21,21 +64,22 @@ class Table extends Component {
     addNewHighlight(newIdentificators);
   }
 
-  deleteRow(event) {
+  deleteRow(event: SyntheticEvent<HTMLButtonElement>) {
     const { table, deleteValues, deleteHighlight, deleteRowFromTable } = this.props;
     const rowsId = []; // make an array of row`s id
-    table.forEach((row) => {
+    table.forEach(row => {
       rowsId.push(row.id); // push ids inside an array
     });
-    const indexOfRow = rowsId.indexOf(+event.target.dataset.id); // find the index of row
-    deleteValues(table[indexOfRow].cells); // call our reducer to delete the row
+    const indexOfRow = rowsId.indexOf(+event.currentTarget.dataset.id); // find the index of row
+    const rowCells = table[indexOfRow].cells;
+    deleteValues(rowCells); // call our reducer to delete the row
     deleteHighlight(indexOfRow); // call our reducer to delete the row
     deleteRowFromTable(indexOfRow); // call our reducer to delete the row
   }
 
 
   render() {
-    const { table, meanValues, highlight } = this.props;
+	const { table, meanValues, highlight } = this.props;
     return (
       <div>
         <table className="table">
@@ -59,7 +103,7 @@ class Table extends Component {
             </tr>
           </thead>
           <tbody>
-            {table.map((row, index) => (
+            {table.map((row, index: number) => (
                 <Row 
                   key={row.id}     
                   row={table[index]} // push row inside every row
@@ -70,10 +114,10 @@ class Table extends Component {
               ))}
             <tr className="table-dark">
               <th>Mean</th>
-              {meanValues.map((mean) => (
+              {meanValues.map(mean => (
                 <th key={mean.id}>
                 {mean.number}
-                </th> // row of mean values
+                </th>
               ))}
             </tr>
           </tbody>
@@ -82,30 +126,6 @@ class Table extends Component {
     );
   }
 }
-const addNewRow = (numbers) => {
-  const payload = numbers;
-  return ({ type: 'ADD_NEW_ROW', payload });
-};
-const addNewValue = (identificators) => {
-  const payload = identificators;
-  return ({ type: 'ADD_NEW_VALUES', payload });
-};
-const addNewHighlight = (newIdentificators) => {
-  const payload = newIdentificators;
-  return ({ type: 'SET_NEW_HIGHLIGHT', payload });
-};
-const deleteRowFromTable = (rowIndex) => {
-  const payload = rowIndex;
-  return ({ type: 'DELETE_ROW_FROM_TABLE', payload });
-};
-const deleteValues = (values) => {
-  const payload = values;
-  return ({ type: 'DELETE_VALUES', payload });
-};
-const deleteHighlight = (values) => {
-  const payload = values;
-  return ({ type: 'DELETE_HIGHLIGHT', payload });
-};
 
 const mapDispatchToProps = {
   addNewRow,
@@ -116,7 +136,7 @@ const mapDispatchToProps = {
   deleteHighlight,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: TableProps) => ({
   defaultIntegers: state.defaultIntegers,
   table: state.table,
   allValues: state.allValues,
