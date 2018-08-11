@@ -46,6 +46,7 @@ export default function (state: state = [], action: action) {
             action.payload.forEach((id) => {
                 row.cells.push({ id, highlight: false });
             });
+
             return [
                 ...state, row,
             ];

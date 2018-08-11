@@ -151,7 +151,7 @@ class Row extends Component<RowProps, RowState> {
         changeValues={this.changeValues.bind(this)}
         lingthUpSomeValues={this.lingthUpSomeValues.bind(this)}
         clearLightedValues={this.clearLightedValues.bind(this)}
-        highlight={highlight.cells[index].highlight}
+        highlight={false}
 
 
 
