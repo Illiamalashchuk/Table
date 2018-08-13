@@ -84,7 +84,7 @@ class Row extends Component<RowProps, RowState> {
   countPercents(allValues, row, total) {
     const percentsRow = [];
     row.cells.forEach((cellId, i) => {
-      percentsRow.push({ id: i, number: `${Math.round(allValues[cellId] / total * 100)}%` });
+      percentsRow.push({ id: i, number: Math.round(allValues[cellId] / total * 100)});
     });
     this.setState({
       percents: percentsRow,
@@ -145,7 +145,7 @@ class Row extends Component<RowProps, RowState> {
       <Cell 
         key={value.id} 
         id={value.id}
-        value={value.number}
+        value={`${value.number}%`}
         isEnterForPercent={isEnterForPercent}
 
         changeValues={this.changeValues.bind(this)}

@@ -1,0 +1,13 @@
+{
+    "presets": [
+      "flow",
+      "env",
+      "react",
+      "es2015",
+      "stage-0"
+    ],
+    "plugins": [
+      "transform-class-properties",
+      "react-flow-props-to-prop-types"
+    ]
+   }

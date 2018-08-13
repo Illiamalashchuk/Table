@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cell component highlighted for percent 1`] = `
+<td
+  className="table-light"
+  data-id={undefined}
+  onClick={undefined}
+  onMouseOut={undefined}
+  onMouseOver={undefined}
+>
+  <div
+    style={
+      Object {
+        "backgroundColor": "blue",
+        "paddingTop": undefined,
+      }
+    }
+  />
+</td>
+`;
+
+exports[`Cell component highlighted status 1`] = `
+<td
+  className="table-primary"
+  data-id={undefined}
+  onClick={undefined}
+  onMouseOut={undefined}
+  onMouseOver={undefined}
+>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+</td>
+`;
+
+exports[`Cell component unhighlighted status 1`] = `
+<td
+  className="table-light"
+  data-id={undefined}
+  onClick={undefined}
+  onMouseOut={undefined}
+  onMouseOver={undefined}
+>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+</td>
+`;

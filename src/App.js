@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import Table from './Table';
 import type { defaultIntegersType } from '../types';
 
-const addTable = (identificators: number[], integers: defaultIntegersType) :{| type: 'ADD_TABLE', payload: Object  |} => {
+export const addTable = (identificators: number[], integers: defaultIntegersType) :{| type: 'ADD_TABLE', payload: Object  |} => {
   const payload = { identificators, integers };
   return ({ type: 'ADD_TABLE', payload });
 }
-const setAllValues = (identificators: number[]) :{| type: 'SET_ALL_VALUES', payload: number[] |} => {
+export const setAllValues = (identificators: number[]) :{| type: 'SET_ALL_VALUES', payload: number[] |} => {
   const payload = identificators;
   return ({ type: 'SET_ALL_VALUES', payload });
 }
-const setHighlight = (identificators: number[], integers: defaultIntegersType) :{| type: 'SET_HIGHLIGHT', payload: Object |} => {
+export const setHighlight = (identificators: number[], integers: defaultIntegersType) :{| type: 'SET_HIGHLIGHT', payload: Object |} => {
   const payload = { identificators, integers };
   return ({ type: 'SET_HIGHLIGHT', payload });
 }

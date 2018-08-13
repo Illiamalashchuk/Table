@@ -62,6 +62,7 @@ class Table extends Component<TableProps> {
     addNewRow(newIdentificators);
     addNewValue(newIdentificators);
     addNewHighlight(newIdentificators);
+    return newIdentificators
   }
 
   deleteRow(event: SyntheticEvent<HTMLButtonElement>) {
