@@ -79,8 +79,10 @@ class Table extends Component<TableProps> {
   }
 
 
+  
+  
   render() {
-	const { table, meanValues, highlight } = this.props;
+    const { table, meanValues, highlight } = this.props;
     return (
       <div>
         <table className="table">
@@ -88,7 +90,7 @@ class Table extends Component<TableProps> {
             <tr>
               <th>№</th>
               <th
-                colSpan={table[0].cells.length} // spacing ih the head of the table
+                colSpan={meanValues.length} // spacing ih the head of the table
               >
               Values
               </th>
@@ -115,9 +117,9 @@ class Table extends Component<TableProps> {
               ))}
             <tr className="table-dark">
               <th>Mean</th>
-              {meanValues.map(mean => (
-                <th key={mean.id}>
-                {mean.number}
+              {meanValues.map((mean, i) => (
+                <th key={(isNaN(mean.id)) ? (i) : (mean.id)}>
+                {(isNaN(mean.number)) ? (0) : (mean.number)}
                 </th>
               ))}
             </tr>
@@ -127,6 +129,7 @@ class Table extends Component<TableProps> {
     );
   }
 }
+
 
 const mapDispatchToProps = {
   addNewRow,
@@ -142,7 +145,7 @@ const mapStateToProps = (state: TableProps) => ({
   table: state.table,
   allValues: state.allValues,
   highlight: state.highlight,
-  meanValues: getMeanValues(state),
+  meanValues: getMeanValues(state)
 });
 
 

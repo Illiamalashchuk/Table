@@ -48,22 +48,20 @@ class Row extends Component<RowProps, RowState> {
 	};
 	
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     const { allValues, row } = this.props;
     const total = row.cells.reduce((sum, current) => sum + allValues[current], 0);
     this.setState({
       summ: total,
     });
-    this.countPercents(allValues, row, total);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { allValues, row } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { row } = this.props;
     const total = row.cells.reduce((sum, current) => sum + nextProps.allValues[current], 0);
     this.setState({
       summ: total,
     });
-    this.countPercents(allValues, row, total);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -93,6 +91,8 @@ class Row extends Component<RowProps, RowState> {
 
   // show percents inside cells
   hidePercent() {
+    const { allValues, row } = this.props;
+    this.countPercents(allValues, row, this.state.summ)
     this.setState({
       isEnterForPercent: !this.state.isEnterForPercent,
     });

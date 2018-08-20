@@ -4,46 +4,35 @@ import { connect } from 'react-redux';
 import Table from './Table';
 import type { defaultIntegersType } from '../types';
 
-export const addTable = (identificators: number[], integers: defaultIntegersType) :{| type: 'ADD_TABLE', payload: Object  |} => {
-  const payload = { identificators, integers };
-  return ({ type: 'ADD_TABLE', payload });
-}
-export const setAllValues = (identificators: number[]) :{| type: 'SET_ALL_VALUES', payload: number[] |} => {
-  const payload = identificators;
-  return ({ type: 'SET_ALL_VALUES', payload });
-}
-export const setHighlight = (identificators: number[], integers: defaultIntegersType) :{| type: 'SET_HIGHLIGHT', payload: Object |} => {
-  const payload = { identificators, integers };
-  return ({ type: 'SET_HIGHLIGHT', payload });
+
+export const saveIntegers = (dispatch) => {
+  return dispatch => fetch('https://api.myjson.com/bins/evuaw')
+    .then(response => response.json())
+    .then(data => {
+      const integers = { m: +data.m, n: +data.n, x: +data.x }
+      const arrLength = integers.m * integers.n;
+      const identificators = [];
+      for (let i = 0; i < arrLength; i += 1) {
+        identificators.push(i + 1);
+      }
+      dispatch ({ type: 'SAVE_INTEGERS', payload: integers });
+      dispatch ({ type: 'SET_HIGHLIGHT', payload: { identificators, integers } });
+      dispatch ({ type: 'ADD_TABLE', payload: { identificators, integers } });
+      dispatch ({ type: 'SET_ALL_VALUES', payload: identificators });
+    });
 }
 
 
 type AppProps = {
   defaultIntegers: defaultIntegersType,
-  setAllValues: typeof setAllValues,
-  setHighlight: typeof setHighlight,
-  addTable: typeof addTable
 };
 
 
 class App extends Component<AppProps> {
-  static createIdArray(integers) {
-    const arrLength = integers.m * integers.n;
-    const identificators = [];
-    for (let i = 0; i < arrLength; i += 1) {
-      identificators.push(i + 1);
-    }
-    return identificators;
-  }
 
-  UNSAFE_componentWillMount() {
-    const { defaultIntegers, setAllValues, setHighlight, addTable } = this.props;
-    const identificators = this.constructor.createIdArray(defaultIntegers);
-    setAllValues(identificators);
-    setHighlight(identificators, defaultIntegers);
-    addTable(identificators, defaultIntegers);
+  componentWillMount() {
+    this.props.saveIntegers(this.props.dispatch)
   }
-
 
   render() {
     return (
@@ -56,17 +45,10 @@ class App extends Component<AppProps> {
 
 
 const mapDispatchToProps = {
-  addTable,
-  setAllValues,
-  setHighlight,
+  saveIntegers
 };
 
 
-const mapStateToProps = (state: AppProps)  => {
-  return {
-    defaultIntegers: state.defaultIntegers,
-  };
-};
 
+export default connect(null, mapDispatchToProps)(App);
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);

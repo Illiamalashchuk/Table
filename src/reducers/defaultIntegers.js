@@ -1,12 +1,16 @@
 // @flow
 import type { defaultIntegersType } from '../../types';
 
-const initialState = {
-  m: 10, // number of rows
-  n: 10, // number of columns
-  x: 10, // number of cells which should be highlighted
-};
+type saveIntegers = { type: 'SAVE_INTEGERS', payload: {m: number, n: number, x: number} };
 
-export default function (state: defaultIntegersType = initialState) {
-  return state;
+export default function (state: defaultIntegersType = {}, action: saveIntegers) {
+  switch (action.type) {
+    case 'SAVE_INTEGERS': {
+      const integers = action.payload;
+      return integers
+    }
+
+    default:
+      return state;
+  }
 }
